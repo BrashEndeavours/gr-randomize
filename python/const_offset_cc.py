@@ -42,9 +42,5 @@ class const_offset_cc(gr.hier_block2):
         # Define blocks and connect them
         self.multiply_const_cc_0 = multiply_const_cc(complex(unit_re, unit_im))
 
-        print("RE: {re}, IM: {im}, Total: {tot}".format(re=unit_re,
-                                                        im=unit_im,
-                                                        tot=unit_re**2 + unit_im**2))
-
         self.connect(self, self.multiply_const_cc_0)
         self.connect(self.multiply_const_cc_0, self)
