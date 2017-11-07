@@ -18,6 +18,9 @@
 # Boston, MA 02110-1301, USA.
 
 from gnuradio import gr
+from gnuradio.blocks import multiply_const_cc
+from math import sqrt
+from random import uniform
 
 class const_offset_cc(gr.hier_block2):
     """
@@ -26,8 +29,22 @@ class const_offset_cc(gr.hier_block2):
     def __init__(self):
         gr.hier_block2.__init__(self,
             "const_offset_cc",
-            gr.io_signature(<+MIN_IN+>, <+MAX_IN+>, gr.sizeof_<+ITYPE+>),  # Input signature
-            gr.io_signature(<+MIN_OUT+>, <+MAX_OUT+>, gr.sizeof_<+OTYPE+>)) # Output signature
+            gr.io_signature(1, 1, gr.sizeof_gr_complex),  # Input signature
+            gr.io_signature(1, 1, gr.sizeof_gr_complex))  # Output signature
 
-            # Define blocks and connect them
-            self.connect()
+        re = uniform(-1000,1000)
+        im = uniform(-1000,1000)
+
+        unit_re = re/sqrt(re**2 + im**2)
+        unit_im = (im/sqrt(re**2 + im**2))
+
+
+        # Define blocks and connect them
+        self.multiply_const_cc_0 = multiply_const_cc(complex(unit_re, unit_im))
+
+        print("RE: {re}, IM: {im}, Total: {tot}".format(re=unit_re,
+                                                        im=unit_im,
+                                                        tot=unit_re**2 + unit_im**2))
+
+        self.connect(self, self.multiply_const_cc_0)
+        self.connect(self.multiply_const_cc_0, self)
